@@ -9,6 +9,7 @@ VPC/*.tfstate.*
 # SSH Keys
 *.pem
 *.pub
+Mid-proj
 
 #credentials
 instances/k8sfiles/credentials
