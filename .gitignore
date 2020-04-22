@@ -13,3 +13,4 @@ VPC/*.tfstate.*
 #credentials
 instances/k8sfiles/credentials
 instances/yamlfiles/templates/add_gitdocker_cred.groovy
+instances/k8sfiles/MYSQL_PWD
