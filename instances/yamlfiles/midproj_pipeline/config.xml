@@ -1,0 +1,60 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<flow-definition plugin="workflow-job@2.37">
+  <actions/>
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties/>
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.80">
+    <script>node (&quot;agent-node-label&quot;) {
+    def DockerImage = &quot;midproj&quot;
+    stage(&quot;git&quot;) { 
+       git credentialsId: &apos;mycred&apos;,
+       url: &apos;https://github.com/michalazarovitz/crud-application-using-flask-and-mysql.git&apos;
+    }
+            
+    stage(&quot;build docker&quot;) {
+        customImage = docker.build(&quot;michalazarovitz/midproj&quot;)
+    }
+    
+    stage(&quot;test&quot;) {
+        sh &apos;docker images&apos;
+    }
+    
+    stage(&quot;push to Docker Hub&quot;) {
+        withDockerRegistry(credentialsId: &apos;mycred&apos;) {
+            customImage.push()
+        }
+    }
+
+     stage(&quot;mysql&quot;) { // Create table 
+        sh &quot;&quot;&quot;
+        cd /home/ec2-user/
+        scp -o StrictHostKeyChecking=no -i Mid-proj.pem /home/ec2-user/jenkins/workspace/midproj_pipeline/database/crud_flask.sql ubuntu@$MYSQL_HOST:/home/ubuntu/
+        ssh -o StrictHostKeyChecking=no -i Mid-proj.pem ubuntu@$MYSQL_HOST &lt;&lt;EOF
+        sudo mysql --user=&apos;$MYSQL_USERNAME&apos; --password=&apos;$MYSQL_PASSWORD&apos; 
+        CREATE DATABASE crud_flask;
+        use crud_flask;
+        source /home/ubuntu/crud_flask.sql;
+        exit
+        EOF
+        &quot;&quot;&quot;
+    }
+
+    stage(&quot;deploy&quot;) { // Deploy the app
+        sh &quot;&quot;&quot;
+        cd /home/ec2-user/
+        ssh -o StrictHostKeyChecking=no -i Mid-proj.pem ubuntu@k8sipadress &lt;&lt;EOF
+        kubectl create configmap mysqlconfig --from-literal=MYSQL_HOST=$MYSQL_HOST --from-literal MYSQL_USER=dev
+        cd k8sfiles
+        kubectl create secret generic db-pass --from-file=MYSQL_PWD
+        kubectl apply -f /home/ubuntu/k8sfiles/deployment.yml
+        exit
+        EOF
+        &quot;&quot;&quot;
+    }
+}</script>
+    <sandbox>true</sandbox>
+  </definition>
+  <triggers/>
+  <disabled>false</disabled>
+</flow-definition>

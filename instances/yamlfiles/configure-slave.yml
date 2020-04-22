@@ -1,0 +1,69 @@
+---
+- name: install jenkins
+  hosts: localhost
+  become: yes
+  become_user: root
+  vars: 
+     github_user: "michalazarovitz"
+     jenkins_slave_user: "ec2-user"
+     jenkins_slave_ip: ""
+     
+  tasks:
+    - name: add ssh credantials to jenkins
+      become: yes
+      jenkins_script: 
+        script:  "{{ lookup('file', 'templates/add_ssh_cred.groovy') }}"
+        validate_certs: no
+        args:
+         userName: "{{ jenkins_slave_user }}"
+       
+
+    - name: create jenkins slave
+      become: yes
+      jenkins_script: 
+       script:  "{{ lookup('file', 'templates/create-jenkins-node.groovy') }}"
+       validate_certs: no
+       args:
+         private_ip: "{{ jenkins_slave_ip }}"
+                    
+
+    - name: Put github&docker user to Jenkins
+      become: yes
+      jenkins_script: 
+       script:  "{{ lookup('file', 'templates/add_gitdocker_cred.groovy') }}"
+       validate_certs: no
+       args:
+        userName: "{{ github_user }}"
+        description: "mycred"
+        id: "mycred"
+        
+   
+
+    - name: install pip
+      become: yes
+      apt:
+        name:  python-pip
+        update_cache: yes
+        state: present
+      
+     
+    - name: install jenkins-python libary
+      become: true
+      pip:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - python-jenkins
+        - lxml    
+    
+    - name: create pipeline job
+      become: yes 
+      jenkins_job:
+        config: "{{ lookup('file', 'midproj_pipeline/config.xml') }}"
+        state: present
+        name: midproj_pipeline
+
+    - name: bulid pipeline with python script
+      become: yes 
+      command: python buildpipeline.py     
+        

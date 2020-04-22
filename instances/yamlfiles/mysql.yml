@@ -1,0 +1,64 @@
+---
+- name: install & configure mysql server
+  hosts: dbserver
+  become: yes
+  become_user: root
+
+  tasks:
+   - name: Install MySQL database & pip
+     apt:
+      name: ['python3', 'mysql-server', 'python3-pip'] 
+      state: present
+      force: yes
+      update_cache: yes
+    
+
+   - name: install MYSQL-python libary
+     become: true
+     pip:
+      name: PyMySQL
+      state: present
+   
+   - name: Start MySQL Service
+     service:
+        name: mysql
+        state: started
+        enabled: yes
+
+   - name: Copy my.cnf to /etc/mysql
+     template:
+       src: my.cnf.j2
+       dest: /etc/mysql/my.cnf
+       owner: root
+       group: root
+       mode: 0644
+
+   - name: open remote access to mysql server
+     lineinfile: 
+       dest: /etc/mysql/mysql.conf.d/mysqld.cnf
+       regexp: 127.0.0.1
+       line: 'bind-address = 0.0.0.0'
+       state: present   
+     
+   - name: restart MySQL Service
+     service:
+        name: mysql
+        state: restarted
+        enabled: yes
+
+   - name: sleep 30 sec
+     shell: sleep 30  
+
+   - name: Create Database user
+     become_user: root
+     mysql_user:
+        login_user: root
+        login_password: root
+        host: '%'
+        config_file: /etc/mysql/my.cnf 
+        login_unix_socket: /var/run/mysqld/mysqld.sock
+        name: dev
+        password: dev
+        priv: '*.*:ALL'
+        state: present
+        

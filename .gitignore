@@ -1,0 +1,15 @@
+
+# Local .terraform directories
+VPC/.terraform/*
+
+# .tfstate files
+VPC/*.tfstate
+VPC/*.tfstate.*
+
+# SSH Keys
+*.pem
+*.pub
+
+#credentials
+instances/k8sfiles/credentials
+instances/yamlfiles/templates/add_gitdocker_cred.groovy

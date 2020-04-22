@@ -1,0 +1,21 @@
+global:
+  enabled: false
+  domain: consul
+  image: "consul:1.4.0"
+  datacenter: opsschool
+  gossipEncryption:
+    secretName: consul-gossip-encryption-key
+    secretKey: key
+
+client:
+  enabled: true
+  join: 
+    - "provider=aws tag_key=consul_server tag_value=true"
+  exposeGossipPorts: true
+  
+dns:
+  enabled: true
+
+syncCatalog:
+  enabled: true
+  
