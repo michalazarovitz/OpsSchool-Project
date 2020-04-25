@@ -1,4 +1,4 @@
-cd vpc
+cd VPC
 terraform init
 terraform plan
 terraform apply -auto-approve
