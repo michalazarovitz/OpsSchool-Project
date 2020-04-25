@@ -2,21 +2,22 @@ resource "aws_instance" "k8s" {
   ami                    = var.ami
   instance_type          = "t2.micro"
   key_name = "Mid-proj"
-  subnet_id= element(var.private_subnets.*.id,1)
+  subnet_id= element(var.private_subnets.*.id,0)
   vpc_security_group_ids = [var.jenkins-sg]
-  iam_instance_profile= aws_iam_instance_profile.eks_profile.name
+  
   
   tags = {
     Name = "k8s"     
   }
 
   connection {
-    host       = self.private_ip
+    host       = self.public_ip
     user        = "ubuntu"
     private_key = file("Mid-proj.pem")
     bastion_host        =  aws_instance.bastion.public_ip
     bastion_user        = "ubuntu"
     bastion_private_key = file("Mid-proj.pem")
+
   }
 
   provisioner "file" {
@@ -26,6 +27,7 @@ resource "aws_instance" "k8s" {
    
  provisioner "remote-exec" {
     inline = [
+      "cloud-init status --wait",
       "sudo apt-get update -y",
       "sudo apt-get install wget unzip -y",
       "sudo wget https://releases.hashicorp.com/terraform/0.12.18/terraform_0.12.18_linux_amd64.zip",

@@ -138,12 +138,12 @@ tee /etc/consul.d/logstash.json > /dev/null <<"EOF"
     "id": "logstash",
     "name": "logstash",
     "tags": ["opsschool"],
-    "port": 5043,
+    "port": 5044,
     "checks": [
       {
         "id": "tcp",
-        "name": "TCP on port 5043",
-        "tcp": "localhost:5043",
+        "name": "TCP on port 5044",
+        "tcp": "localhost:5044",
         "interval": "10s",
         "timeout": "1s"
       },

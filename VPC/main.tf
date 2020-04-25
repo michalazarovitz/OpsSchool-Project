@@ -6,6 +6,8 @@ provider "aws" {
 
 resource "aws_vpc" "midprojvpc" {
   cidr_block = var.vpc_cidr_block
+  enable_dns_hostnames = true
+  enable_dns_support = true
   tags = {
     Name = "mid_proj_vpc"
   }
@@ -23,6 +25,7 @@ resource "aws_subnet" "public-subnets" {
         Name = "public-subnet-${count.index+1}"
         "kubernetes.io/cluster/opsSchool-eks-flask-app" = "shared"
         "kubernetes.io/role/elb" = 1
+        Tier = "Public"
     }
 }
 
@@ -39,6 +42,8 @@ resource "aws_subnet" "public-subnets" {
         Name = "private-subnet-${count.index+1}"
         "kubernetes.io/cluster/opsSchool-eks-flask-app" = "shared"
         "kubernetes.io/role/internal-elb" = 1
+        Tier = "Private"
+        
     }
 }
 

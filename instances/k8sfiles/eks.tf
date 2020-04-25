@@ -14,7 +14,13 @@ variable "additional_ip_addresses_for_eks_access" {
 
 data "aws_subnet_ids" "eks_subnets" {
   vpc_id = var.vpc_id
+}
 
+data "aws_subnet_ids" "eks_private_subnets" {
+  vpc_id = var.vpc_id
+  tags = {
+    Tier = "Private"
+  }
 }
 
 data "aws_vpc" "eks_vpc" {
@@ -133,6 +139,7 @@ module "eks" {
     {
       name                          = "worker-group-1"
       instance_type                 = "t2.medium"
+      subnets      = data.aws_subnet_ids.eks_private_subnets.ids
       asg_desired_capacity          = 2
       additional_security_group_ids = [aws_security_group.worker_group_mgmt.id]
       key_name = "Mid-proj"

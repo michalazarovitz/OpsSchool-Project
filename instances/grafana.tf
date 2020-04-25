@@ -16,30 +16,26 @@ resource "aws_instance" "grafana" {
     host = aws_instance.grafana.public_ip
     user = "ubuntu"
     private_key = file("Mid-proj.pem")
-    bastion_host        =  aws_instance.bastion.public_ip
-    bastion_user        = "ubuntu"
-    bastion_private_key = file("Mid-proj.pem")
   }
+
+  provisioner "file" {
+    source      = "../instances/templates/install_grafana.sh"
+    destination = "/tmp/install_grafana.sh"
+  }
+
 
  
  provisioner "remote-exec" {
     inline = [
-      "sudo apt update",
-      "sudo apt-get install -y gnupg2 curl  software-properties-common",
-      "curl https://packages.grafana.com/gpg.key | sudo apt-key add -",
-      "sudo add-apt-repository 'deb https://packages.grafana.com/oss/deb stable main'",
-      "sudo apt-get update",
-      "sudo apt-get -y install grafana",
-      "sudo systemctl start grafana-server"
-    
+      "sudo chmod +x /tmp/install_grafana.sh",
+      "/tmp/install_grafana.sh"
     ]
   }
 
 }
 
-
 provider "grafana" {
-  url  = "http://${aws_instance.grafana.private_ip}:3000"
+  url  = "http://${aws_instance.grafana.public_ip}:3000"
   auth = "admin:admin"
 }
 

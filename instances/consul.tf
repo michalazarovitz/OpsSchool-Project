@@ -54,7 +54,6 @@ data "template_cloudinit_config" "consul_client" {
   }
 }
 
-
 # Create the user-data for the Consul server
 data "template_file" "consul_server" {
   count    = var.servers

@@ -12,7 +12,7 @@ sudo chmod +x /usr/share/kibana/bin/kibana
 sudo chown -R ubuntu:kibana /etc/kibana
 sudo echo 'server.port: 5601' >> /etc/kibana/kibana.yml
 sudo echo 'server.host: 0.0.0.0' >> /etc/kibana/kibana.yml
-sudo echo 'elasticsearch.hosts: ["http://${elasticsearch_host}:9200"]' >> /etc/kibana/kibana.yml
+sudo echo 'elasticsearch.hosts: ["http://elasticsearch.service.opsschool.consul:9200"]' >> /etc/kibana/kibana.yml
 sudo systemctl restart kibana.service
 
 #Install consul

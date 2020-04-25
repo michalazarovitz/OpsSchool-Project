@@ -3,7 +3,7 @@ resource "aws_instance" "jenkins_slave" {
   ami = "ami-04590e7389a6e577c"
   instance_type = "t2.micro"
   key_name = "Mid-proj"
-  subnet_id= element(var.public_subnets.*.id,0)
+  subnet_id= element(var.private_subnets.*.id,0)
   vpc_security_group_ids = [var.jenkins-sg]
   
   
@@ -33,6 +33,7 @@ resource "aws_instance" "jenkins_slave" {
 
     provisioner "remote-exec" {
     inline = [
+       "cloud-init status --wait",
        "sudo yum update -y",
        "sudo yum install java-1.8.0 -y",
        "sudo alternatives --install /usr/bin/java java /usr/java/latest/bin/java 1",

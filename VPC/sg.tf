@@ -191,7 +191,8 @@ resource "aws_security_group" "bastion-sg" {
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
-tags = {
+  
+ tags = {
     Name = "bastion-sg"
   }
 
