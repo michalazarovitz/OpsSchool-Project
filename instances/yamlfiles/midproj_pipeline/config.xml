@@ -26,20 +26,6 @@
         }
     }
 
-     stage(&quot;mysql&quot;) { // Create table 
-        sh &quot;&quot;&quot;
-        cd /home/ec2-user/
-        scp -o StrictHostKeyChecking=no -i Mid-proj.pem /home/ec2-user/jenkins/workspace/midproj_pipeline/database/crud_flask.sql ubuntu@$MYSQL_HOST:/home/ubuntu/
-        ssh -o StrictHostKeyChecking=no -i Mid-proj.pem ubuntu@$MYSQL_HOST &lt;&lt;EOF
-        sudo mysql --user=&apos;$MYSQL_USERNAME&apos; --password=&apos;$MYSQL_PASSWORD&apos; 
-        CREATE DATABASE crud_flask;
-        use crud_flask;
-        source /home/ubuntu/crud_flask.sql;
-        exit
-        EOF
-        &quot;&quot;&quot;
-    }
-
     stage(&quot;deploy&quot;) { // Deploy the app
         sh &quot;&quot;&quot;
         cd /home/ec2-user/

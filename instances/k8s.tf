@@ -11,7 +11,7 @@ resource "aws_instance" "k8s" {
   }
 
   connection {
-    host       = self.public_ip
+    host       = self.private_ip
     user        = "ubuntu"
     private_key = file("Mid-proj.pem")
     bastion_host        =  aws_instance.bastion.public_ip

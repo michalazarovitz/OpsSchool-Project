@@ -3,9 +3,10 @@ resource "aws_instance" "elasticsearch" {
   instance_type = "t2.medium"
   key_name      = var.key_name
   subnet_id = element(var.private_subnets.*.id, 1)
-  vpc_security_group_ids = [var.consul-sg]
+  vpc_security_group_ids = [var.elk-sg, var.consul-agents-sg]
   iam_instance_profile   = aws_iam_instance_profile.consul-join.name
-  user_data = "${file("${path.module}/templates/elasticsearch.sh")}"
+  user_data = data.template_cloudinit_config.consul_client.1.rendered
+
 
 
  tags = {

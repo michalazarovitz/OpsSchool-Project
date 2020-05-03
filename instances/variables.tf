@@ -6,6 +6,10 @@ variable "jenkins-sg" {}
 variable "mysql-sg" {}
 variable "consul-sg" {}
 variable "bastion-sg" {}
+variable "consul-agents-sg" {}
+variable "prometheus-sg" {}
+variable "grafana-sg" {}
+variable "elk-sg" {}
 
 variable "region" {
   description = "AWS region for VMs"
@@ -19,7 +23,7 @@ variable "servers" {
 
 variable "consul_agents" {
   description = "consul agents"
-  default = ["jenkins", "mysql", "promcol", "grafana"]
+  default = ["logstash", "elasticsearch", "kibana", "mysql", "promcol", "grafana" ,"jenkins"]
 }
 
 

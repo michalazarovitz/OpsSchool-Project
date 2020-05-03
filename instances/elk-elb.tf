@@ -2,7 +2,7 @@ resource "aws_elb" "elk-elb" {
   name               = "elk-elb"
   internal = false
   subnets = var.public_subnets.*.id
-  security_groups = [var.consul-sg]
+  security_groups = [var.elk-sg]
 
   listener {
     instance_port     = 5601

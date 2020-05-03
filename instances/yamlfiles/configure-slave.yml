@@ -54,7 +54,15 @@
         state: present
       with_items:
         - python-jenkins
-        - lxml    
+        - lxml 
+
+    - name: create mysql pipeline job
+      become: yes 
+      jenkins_job:
+        config: "{{ lookup('file', 'db_pipeline/config.xml') }}"
+        state: present
+        name: db_pipeline
+        
     
     - name: create pipeline job
       become: yes 

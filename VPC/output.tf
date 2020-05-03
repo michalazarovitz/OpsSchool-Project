@@ -29,6 +29,27 @@ output "consul-sg" {
 }
 
 output "bastion-sg" {
-  value       = aws_security_group.consul-sg.id
+  value       = aws_security_group.bastion-sg.id
   description = "bastion-sg"
 }
+
+output "consul-agents-sg" {
+  value       = aws_security_group.consul-agents-sg.id
+  description = "consul-agents-sg"
+}
+
+output "prometheus-sg" {
+  value       = aws_security_group.prometheus-sg.id
+  description = "prometheus-sg"
+}
+
+output "grafana-sg" {
+  value       = aws_security_group.grafana-sg.id
+  description = "grafana-sg"
+}
+
+output "elk-sg" {
+  value       = aws_security_group.elk-sg.id
+  description = "elk-sg"
+}
+

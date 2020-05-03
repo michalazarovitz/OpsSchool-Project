@@ -58,6 +58,10 @@ module "instances" {
   mysql-sg= aws_security_group.mysql-sg.id
   consul-sg= aws_security_group.consul-sg.id
   bastion-sg= aws_security_group.bastion-sg.id
-
+  consul-agents-sg= aws_security_group.consul-agents-sg.id
+  prometheus-sg= aws_security_group.prometheus-sg.id
+  grafana-sg= aws_security_group.grafana-sg.id
+  elk-sg= aws_security_group.elk-sg.id
+ 
 }
 

@@ -4,8 +4,8 @@ resource "aws_instance" "promcol" {
   key_name      = var.key_name
   subnet_id = element(var.private_subnets.*.id, 1)
   iam_instance_profile   = aws_iam_instance_profile.consul-join.name
-  vpc_security_group_ids = [var.consul-sg]
-  user_data = data.template_cloudinit_config.consul_client.2.rendered
+  vpc_security_group_ids = [var.prometheus-sg, var.consul-agents-sg]
+  user_data = data.template_cloudinit_config.consul_client.4.rendered
  
   tags = {
     Name = "Prometheus"
