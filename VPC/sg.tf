@@ -23,6 +23,38 @@ resource "aws_security_group" "bastion-sg" {
 
 }
 
+resource "aws_security_group" "node-exporter-sg" {
+  vpc_id      = aws_vpc.midprojvpc.id
+  name        = "node-exporter-sg"
+  description = "node-exporter-sg"
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port   = 9100
+    to_port     = 9100
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+   ingress {
+    from_port   = 9104
+    to_port     = 9107
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  
+ tags = {
+    Name = "node-exporter-sg"
+  }
+
+}
+
 resource "aws_security_group" "consul-sg" {
   vpc_id      = aws_vpc.midprojvpc.id
   name        = "consul-sg"

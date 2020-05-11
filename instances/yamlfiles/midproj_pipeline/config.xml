@@ -38,6 +38,11 @@
         EOF
         &quot;&quot;&quot;
     }
+     stage(&apos;Slack it&apos;){
+        slackSend color: &quot;#439FE0&quot;, message: &quot;Build Finished Successfully: ${env.JOB_NAME} ${env.BUILD_NUMBER}&quot;
+
+    }
+
 }</script>
     <sandbox>true</sandbox>
   </definition>

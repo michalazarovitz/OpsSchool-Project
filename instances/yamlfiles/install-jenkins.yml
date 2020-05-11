@@ -72,7 +72,7 @@
        - docker-workflow
        - template-project
        - config-file-provider
-       - bitbucket
+       - slack
        - git
        - pipeline-stage-view
        - pipeline-utility-steps

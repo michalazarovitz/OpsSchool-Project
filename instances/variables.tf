@@ -10,6 +10,7 @@ variable "consul-agents-sg" {}
 variable "prometheus-sg" {}
 variable "grafana-sg" {}
 variable "elk-sg" {}
+variable "node-exporter-sg"{}
 
 variable "region" {
   description = "AWS region for VMs"

@@ -92,6 +92,9 @@ data "template_cloudinit_config" "consul_servers" {
   part {
     content = file("${path.module}/templates/install-filebeat.sh")
   }
+  part {
+    content = file("${path.module}/templates/install-consul-exporter.sh")
+  }
 }
 
 
@@ -104,7 +107,7 @@ resource "aws_instance" "consul_server" {
   key_name      = var.key_name
   subnet_id = element(var.private_subnets.*.id, count.index)
   iam_instance_profile   = aws_iam_instance_profile.consul-join.name
-  vpc_security_group_ids = [var.consul-sg]
+  vpc_security_group_ids = [var.consul-sg, var.node-exporter-sg]
   user_data = element(data.template_cloudinit_config.consul_servers.*.rendered, count.index)
 
   tags = {

@@ -62,6 +62,7 @@ module "instances" {
   prometheus-sg= aws_security_group.prometheus-sg.id
   grafana-sg= aws_security_group.grafana-sg.id
   elk-sg= aws_security_group.elk-sg.id
+  node-exporter-sg= aws_security_group.node-exporter-sg.id
  
 }
 

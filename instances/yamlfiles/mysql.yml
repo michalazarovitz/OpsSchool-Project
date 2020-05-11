@@ -32,7 +32,7 @@
        owner: root
        group: root
        mode: 0644
-
+       
    - name: open remote access to mysql server
      lineinfile: 
        dest: /etc/mysql/mysql.conf.d/mysqld.cnf
@@ -61,4 +61,18 @@
         password: dev
         priv: '*.*:ALL'
         state: present
+
+   - name: Create promthues user
+     become_user: root
+     mysql_user:
+        login_user: root
+        login_password: root
+        host: '%'
+        config_file: /etc/mysql/my.cnf 
+        login_unix_socket: /var/run/mysqld/mysqld.sock
+        name: mysqld_exporter
+        password: mysqld_exporter
+        priv: '*.*:ALL'
+        state: present
+
         

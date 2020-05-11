@@ -36,9 +36,14 @@
         userName: "{{ github_user }}"
         description: "mycred"
         id: "mycred"
+
+    - name: slack integration
+      become: yes
+      jenkins_script: 
+       script:  "{{ lookup('file', 'templates/config-slack.groovy') }}"
+       validate_certs: no    
         
    
-
     - name: install pip
       become: yes
       apt:

@@ -28,7 +28,49 @@ scrape_configs:
         target_label: instance
       - source_labels: [__meta_consul_tags]
         regex: .*,k8s,.*
-        action: drop           
+        action: drop 
+
+  - job_name: 'consul-exporter'
+    consul_sd_configs:
+      - server: 'localhost:8500'
+    relabel_configs:
+      - source_labels: ['__meta_consul_service']
+        regex:  '^consul$' 
+        target_label: job
+        # This will drop all targets that do not match the regex rule,
+        # leaving only the 'consul' targets
+        action: 'keep'
+      - source_labels: []
+        replacement:   '/metrics'
+        target_label: __metrics_path__
+      - source_labels: ['__address__']
+        separator:     ':'
+        regex:         '(.*):(.*)'
+        target_label:  '__address__'
+        replacement:   '\$1:9107'
+      - source_labels: [__meta_consul_node]
+        target_label: instance
+
+  - job_name: 'mysql-exporter'
+    consul_sd_configs:
+      - server: 'localhost:8500'
+    relabel_configs:
+      - source_labels: ['__meta_consul_service']
+        regex:  '^mysql$' 
+        target_label: job
+        # This will drop all targets that do not match the regex rule,
+        # leaving only the 'mysql' targets
+        action: 'keep'
+      - source_labels: []
+        replacement:   '/metrics'
+        target_label: __metrics_path__
+      - source_labels: ['__address__']
+        separator:     ':'
+        regex:         '(.*):(.*)'
+        target_label:  '__address__'
+        replacement:   '\$1:9104'
+      - source_labels: [__meta_consul_node]
+        target_label: instance                          
 EOF
 
 # Configure promcol service

@@ -53,3 +53,8 @@ output "elk-sg" {
   description = "elk-sg"
 }
 
+output "node-exporter-sg" {
+  value       = aws_security_group.node-exporter-sg.id
+  description = "node-exporter-sg"
+}
+

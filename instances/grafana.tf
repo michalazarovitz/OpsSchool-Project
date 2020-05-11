@@ -4,7 +4,7 @@ resource "aws_instance" "grafana" {
   key_name      = var.key_name
   subnet_id = element(var.public_subnets.*.id, 0)
   iam_instance_profile   = aws_iam_instance_profile.consul-join.name
-  vpc_security_group_ids = [var.grafana-sg, var.consul-agents-sg]
+  vpc_security_group_ids = [var.grafana-sg, var.consul-agents-sg, var.node-exporter-sg]
   user_data = data.template_cloudinit_config.consul_client.5.rendered
 
  
@@ -49,4 +49,5 @@ resource "grafana_data_source" "prometheus" {
 resource "grafana_dashboard" "node-exporter" {
   config_json = "${file("${path.module}/templates/node-exporter.json")}"
 }
+
 
