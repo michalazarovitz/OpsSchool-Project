@@ -24,7 +24,7 @@ variable "servers" {
 
 variable "consul_agents" {
   description = "consul agents"
-  default = ["logstash", "elasticsearch", "kibana", "mysql", "promcol", "grafana" ,"jenkins"]
+  default = ["logstash", "elasticsearch", "kibana", "mysql", "promcol", "grafana" ,"jenkins", "k8s"]
 }
 
 

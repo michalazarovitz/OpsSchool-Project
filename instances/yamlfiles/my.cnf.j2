@@ -5,3 +5,9 @@ password=root
 [mysqld]
 bind-address            = 0.0.0.0
 port                    = 3306
+
+# LOGGING
+general_log = 1
+general_log_file                = /var/log/mysql/mysql.log
+long_query_time = 1
+log-queries-not-using-indexes   = 1

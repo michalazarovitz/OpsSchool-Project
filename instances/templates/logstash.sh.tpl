@@ -16,7 +16,7 @@ sudo systemctl daemon-reload
 sudo systemctl enable logstash
 sudo systemctl start logstash
 
- sudo /usr/share/logstash/bin/logstash-plugin install logstash-input-beats
+sudo /usr/share/logstash/bin/logstash-plugin install logstash-input-beats
 
 # Create logstash configuration
 sudo mkdir -p /etc/logstash/conf.d

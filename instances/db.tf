@@ -27,13 +27,20 @@ resource "aws_instance" "db" {
     destination = "/tmp/install-mysql-exporter.sh"
   }
 
+  provisioner "file" {
+    source      = "../instances/templates/configure-mysql-logs.sh"
+    destination = "/tmp/configure-mysql-logs.sh"
+  }  
+
 
  
  provisioner "remote-exec" {
     inline = [
       "cloud-init status --wait",
       "sudo chmod +x /tmp/install-mysql-exporter.sh",
-      "/tmp/install-mysql-exporter.sh"
+      "/tmp/install-mysql-exporter.sh",
+      "sudo chmod +x /tmp/configure-mysql-logs.sh",
+      "/tmp/configure-mysql-logs.sh"
     ]
   }
   

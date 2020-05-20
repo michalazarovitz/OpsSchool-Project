@@ -27,6 +27,7 @@ resource "aws_instance" "grafana" {
  
  provisioner "remote-exec" {
     inline = [
+      "cloud-init status --wait",
       "sudo chmod +x /tmp/install_grafana.sh",
       "/tmp/install_grafana.sh"
     ]
@@ -46,8 +47,20 @@ resource "grafana_data_source" "prometheus" {
   is_default = true
 }
 
+resource "grafana_data_source" "prometheus-k8s" {
+  type       = "prometheus"
+  name       = "prometheus-k8s"
+  url        = "http://prometheus-server.service.opsschool.consul"
+  
+}
+
 resource "grafana_dashboard" "node-exporter" {
   config_json = "${file("${path.module}/templates/node-exporter.json")}"
 }
+
+resource "grafana_dashboard" "k8s-metrics" {
+  config_json = "${file("${path.module}/templates/kubernetes-metrics.json")}"
+}
+
 
 

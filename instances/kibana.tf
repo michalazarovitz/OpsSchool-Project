@@ -1,5 +1,5 @@
 resource "aws_instance" "kibana" {
-  depends_on= [aws_instance.elasticsearch]
+  depend_on= [aws_instance.jenkins_master]
   ami           = var.ami
   instance_type = "t2.micro"
   key_name      = var.key_name
@@ -13,6 +13,26 @@ resource "aws_instance" "kibana" {
   tags = {
     Name = "kibana"
   }
+  connection {
+    host = aws_instance.kibana.private_ip
+    user = "ubuntu"
+    private_key = file("Mid-proj.pem")
+    bastion_host        =  aws_instance.bastion.public_ip
+    bastion_user        = "ubuntu"
+    bastion_private_key = file("Mid-proj.pem")
+  }
 
+  provisioner "file" {
+    source      = "../instances/templates/export.ndjson"
+    destination = "/home/ubuntu/export.ndjson"
+  }
+
+ 
+ provisioner "remote-exec" {
+    inline = [
+      "curl -X POST 'localhost:5601/api/saved_objects/_import' -H 'kbn-xsrf: true' --form file=@export.ndjson"
+    ]
+  }
+  
 
 }

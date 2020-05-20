@@ -122,11 +122,50 @@ connectInject:
       {}
 EOF
 helm install hashicorp ./consul-helm
+
+consul_dns_ip=$(kubectl get service/hashicorp-consul-dns -o jsonpath='{.spec.clusterIP}')
+
+tee /home/ubuntu/core-dns.yaml > /dev/null <<EOF
+apiVersion: v1
+data:
+  Corefile: |
+    .:53 {
+        errors
+        health
+        kubernetes cluster.local in-addr.arpa ip6.arpa {
+          pods insecure
+          upstream
+          fallthrough in-addr.arpa ip6.arpa
+        }
+        prometheus :9153
+        forward . /etc/resolv.conf
+        cache 30
+        loop
+        reload
+        loadbalance
+    }
+    consul {
+              errors
+              cache 30
+              forward . $consul_dns_ip
+    }
+kind: ConfigMap
+metadata:
+  name: coredns
+  namespace: kube-system
+EOF
+
+kubectl replace -n kube-system -f /home/ubuntu/core-dns.yaml
+
+
+## Prometheus
 helm repo add stable https://kubernetes-charts.storage.googleapis.com
 helm repo update
 kubectl create namespace monitoring
-helm install prometheus --namespace monitoring stable/prometheus
+helm install prometheus --namespace monitoring stable/prometheus -f /home/ubuntu/k8sfiles/values.yaml
 kubectl patch svc prometheus-server --namespace monitoring -p '{"spec": {"type": "LoadBalancer"}}'
 
+#Deploy Filebeat to Kubernetes
+kubectl create -f /home/ubuntu/k8sfiles/filebeat-kubernetes.yaml
 
 
